@@ -51,6 +51,14 @@ public class BalanceModel {
         this.k2 = k2;
     }
 
+    public void setUa(double Ua) {
+        this.Ua = Ua;
+    }
+
+    public void setUb(double Ub) {
+        this.Ub = Ub;
+    }
+
     private double[] progonka(int n, double[] a, double[] c, double[] b, double[] f) {
         double m;
         double[] x = new double[n + 1];
@@ -65,8 +73,6 @@ public class BalanceModel {
         for (int i = n - 2; i >= 0; i--) {
             x[i] = (f[i] - b[i] * x[i + 1]) / c[i];
         }
-
-
         return x;
     }
 
@@ -112,52 +118,39 @@ public class BalanceModel {
         }
 
         for (int i = 1; i < N; i++) {
-            A[i-1] = -sigma * x_n(a + i * h);
-            C[i-1] = -sigma * x_n1(a + i * h);
-            B[i-1] = (h * h) / (tau) - C[i] - A[i];//(возможно он тут вынес одно К)
+            A[i] = -sigma * x_n(a + i * h);
+            C[i] = -sigma * x_n1(a + i * h);
+            B[i] = ((h * h) / tau) - C[i] - A[i];
         }
 
         do {
             Meps = 0.0;
 
             for (int i = 1; i < N; i++) {
-                F[i-1] = ((1 - sigma) * x_n(a + i * h)) * U0[i - 1] +
+                F[i] = ((1 - sigma) * x_n(a + i * h)) * U0[i - 1] +
                         (((h * h) / tau) - (1 - sigma) * x_n(a + i * h) - (1 - sigma) * x_n1(a + i * h)) * U0[i] +
                         ((1 - sigma) * x_n1(a + i * h)) * U0[i + 1];
             }
-
-            System.out.println("F:");
-            for (int i = 0; i < N; i++) {
-                System.out.println(F[i]);
-            }
-
             U1[0] = Ua;
             U1[N] = Ub;
-            F[0] -= A[0] * U1[0];//??
-            F[N - 1] -= C[N - 1] * U1[N];//??
-            System.out.println("F1:");
-            for (int i = 0; i < N; i++) {
-                System.out.println(F[i]);
-            }
+            F[1] -= A[1] * U1[0];
+            F[N - 1] -= C[N - 1] * U1[N];
+
             for (int i = 1; i < N - 1; i++) {
                 B[i + 1] = B[i + 1] * B[i] - A[i + 1] * C[i];
                 C[i + 1] = C[i + 1] * B[i];
                 F[i + 1] = F[i + 1] * B[i] - A[i + 1] * F[i];
             }
 
-
             U1[N - 1] = F[N - 1] / B[N - 1];
             for (int i = N - 2; i > 0; i--) {
                 U1[i] = (F[i] - C[i] * U1[i + 1]) / B[i];
             }
 
-
-            // U1 = progonka(N,A,B,C,F);
-
             for (int i = 1; i < N; i++) {
                 A[i] = -sigma * x_n(a + i * h);
                 C[i] = -sigma * x_n1(a + i * h);
-                B[i] = (h * h) / (tau) - C[i] - A[i];//(возможно он тут вынес одно К)
+                B[i] = ((h * h) / tau) - C[i] - A[i];
             }
 
             for (int i = 0; i < N + 1; i++) {
@@ -166,18 +159,6 @@ public class BalanceModel {
                 }
                 U0[i] = U1[i];
             }
-            System.out.println("U:");
-
-            for (int i = 0; i < N + 1; i++) {
-                System.out.println(U0[i]);
-            }
         } while (Meps > eps);
-
-
-        for (int i = 0; i < N + 1; i++) {
-            System.out.println(U0[i]);
-        }
     }
-
-
 }

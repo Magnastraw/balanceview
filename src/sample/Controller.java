@@ -23,7 +23,10 @@ public class Controller {
     private NumberAxis yAxis;
 
     @FXML
-    private TextField textEditAB;
+    private TextField textEditA;
+
+    @FXML
+    private TextField textEditB;
 
     @FXML
     private TextField textEditSigma;
@@ -41,6 +44,12 @@ public class Controller {
     private TextField textEditK2;
 
     @FXML
+    private TextField textEditUa;
+
+    @FXML
+    private TextField textEditUb;
+
+    @FXML
     private void paintGraph() {
         model = new BalanceModel();
         model.setSigma(Double.valueOf(textEditSigma.getText()));
@@ -48,8 +57,13 @@ public class Controller {
         model.setN(Integer.valueOf(textEditN.getText()));
         model.setK1(Double.valueOf(textEditK1.getText()));
         model.setK2(Double.valueOf(textEditK2.getText()));
-        model.setA(Double.valueOf(textEditAB.getText().split(",")[0]));
-        model.setB(Double.valueOf(textEditAB.getText().split(",")[1]));
+        model.setA(Double.valueOf(textEditA.getText()));
+        model.setB(Double.valueOf(textEditB.getText()));
+        model.setUa(Double.valueOf(textEditUa.getText()));
+        model.setUb(Double.valueOf(textEditUb.getText()));
+
+        yAxis.setLowerBound(Double.valueOf(textEditUa.getText()));
+        yAxis.setUpperBound(Double.valueOf(textEditUb.getText()));
 
         model.balance();
         U = model.getU();
@@ -68,9 +82,9 @@ public class Controller {
     @FXML
     private void clearGraph() {
         yAxis.setAutoRanging(false);
-        yAxis.setLowerBound(0);
-        yAxis.setUpperBound(1);
-        yAxis.setTickUnit(3);
+        yAxis.setLowerBound(Double.valueOf(textEditUa.getText()));
+        yAxis.setUpperBound(Double.valueOf(textEditUb.getText()));
+        yAxis.setTickUnit(0.1);
         lineChart.getData().retainAll();
 
     }
