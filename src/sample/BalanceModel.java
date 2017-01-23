@@ -107,6 +107,26 @@ public class BalanceModel {
 
         h = (b - a) / N;
 
+        k_pos=(b - a)/3.0;
+
+        int step=0;
+        double temp_pos=0;
+
+        while((a + step * h)<=k_pos){
+            temp_pos=a + step * h;
+            step++;
+        }
+        //предусмотреть отсутсвие точек построения(если их будет много)
+        if(temp_pos==k_pos){
+            k_pos=temp_pos;
+        } else if(temp_pos<k_pos){
+            if(((temp_pos+h)-k_pos)<((k_pos-temp_pos))){
+                k_pos=temp_pos+h;
+            } else{
+                k_pos=temp_pos;
+            }
+        }
+
         tau = h;
 
         for (int i = 0; i < N + 1; i++) {

@@ -86,7 +86,6 @@ public class Controller {
         yAxis.setUpperBound(Double.valueOf(textEditUb.getText()));
         yAxis.setTickUnit(0.1);
         lineChart.getData().retainAll();
-
     }
 
 }
