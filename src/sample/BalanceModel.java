@@ -3,10 +3,14 @@ package sample;
 public class BalanceModel {
 
     private double a = 0, b = 1, sigma = 0.5, eps = 0.1, k_pos = 0.3, k1 = 2.0, k2 = 3.0, h, tau, Ua = 0.0, Ub = 1.0, Meps;
+    private double iteration, t;
 
     private int N = 10;
+
     private double[] U0;
     private double[] U1;
+
+    private double[] U_exact;
 
     private double[] A;
     private double[] B;
@@ -21,6 +25,22 @@ public class BalanceModel {
 
     public double[] getX() {
         return X;
+    }
+
+    public double[] getU_exact() {
+        return U_exact;
+    }
+
+    public double getT() {
+        return t;
+    }
+
+    public double getIteration() {
+        return iteration;
+    }
+
+    public double getMeps(){
+        return Meps;
     }
 
     public void setA(double a) {
@@ -41,6 +61,10 @@ public class BalanceModel {
 
     public void setN(int N) {
         this.N = N;
+    }
+
+    public void setT(double tau) {
+        this.tau = tau;
     }
 
     public void setK1(double k1) {
@@ -107,27 +131,25 @@ public class BalanceModel {
 
         h = (b - a) / N;
 
-        k_pos=(b - a)/3.0;
+        k_pos = (b - a) / 3.0;
 
-        int step=0;
-        double temp_pos=0;
+        int step = 0;
+        double temp_pos = 0;
 
-        while((a + step * h)<=k_pos){
-            temp_pos=a + step * h;
+        while ((a + step * h) <= k_pos) {
+            temp_pos = a + step * h;
             step++;
         }
-        //предусмотреть отсутсвие точек построения(если их будет много)
-        if(temp_pos==k_pos){
-            k_pos=temp_pos;
-        } else if(temp_pos<k_pos){
-            if(((temp_pos+h)-k_pos)<((k_pos-temp_pos))){
-                k_pos=temp_pos+h;
-            } else{
-                k_pos=temp_pos;
+
+        if (temp_pos == k_pos) {
+            k_pos = temp_pos;
+        } else if (temp_pos < k_pos) {
+            if (((temp_pos + h) - k_pos) < ((k_pos - temp_pos))) {
+                k_pos = temp_pos + h;
+            } else {
+                k_pos = temp_pos;
             }
         }
-
-        tau = h;
 
         for (int i = 0; i < N + 1; i++) {
             X[i] = a + i * h;
@@ -146,31 +168,39 @@ public class BalanceModel {
         do {
             Meps = 0.0;
 
-            for (int i = 1; i < N; i++) {
-                F[i] = ((1 - sigma) * x_n(a + i * h)) * U0[i - 1] +
-                        (((h * h) / tau) - (1 - sigma) * x_n(a + i * h) - (1 - sigma) * x_n1(a + i * h)) * U0[i] +
-                        ((1 - sigma) * x_n1(a + i * h)) * U0[i + 1];
-            }
-            U1[0] = Ua;
-            U1[N] = Ub;
-            F[1] -= A[1] * U1[0];
-            F[N - 1] -= C[N - 1] * U1[N];
+            if (sigma == 0) {
+                U1[0] = Ua;
+                U1[N] = Ub;
+                for (int i = 1; i < N; i++) {
+                    U1[i] = U0[i] + (tau / (h * h)) * (x_n(a + i * h) * (U0[i - 1] - U0[i]) - x_n1(a + i * h) * (U0[i] - U0[i + 1]));
+                }
+            } else {
+                for (int i = 1; i < N; i++) {
+                    F[i] = ((1 - sigma) * x_n(a + i * h)) * U0[i - 1] +
+                            (((h * h) / tau) - (1 - sigma) * x_n(a + i * h) - (1 - sigma) * x_n1(a + i * h)) * U0[i] +
+                            ((1 - sigma) * x_n1(a + i * h)) * U0[i + 1];
+                }
+                U1[0] = Ua;
+                U1[N] = Ub;
+                F[1] -= A[1] * U1[0];
+                F[N - 1] -= C[N - 1] * U1[N];
 
-            for (int i = 1; i < N - 1; i++) {
-                B[i + 1] = B[i + 1] * B[i] - A[i + 1] * C[i];
-                C[i + 1] = C[i + 1] * B[i];
-                F[i + 1] = F[i + 1] * B[i] - A[i + 1] * F[i];
-            }
+                for (int i = 1; i < N - 1; i++) {
+                    B[i + 1] = B[i + 1] * B[i] - A[i + 1] * C[i];
+                    C[i + 1] = C[i + 1] * B[i];
+                    F[i + 1] = F[i + 1] * B[i] - A[i + 1] * F[i];
+                }
 
-            U1[N - 1] = F[N - 1] / B[N - 1];
-            for (int i = N - 2; i > 0; i--) {
-                U1[i] = (F[i] - C[i] * U1[i + 1]) / B[i];
-            }
+                U1[N - 1] = F[N - 1] / B[N - 1];
+                for (int i = N - 2; i > 0; i--) {
+                    U1[i] = (F[i] - C[i] * U1[i + 1]) / B[i];
+                }
 
-            for (int i = 1; i < N; i++) {
-                A[i] = -sigma * x_n(a + i * h);
-                C[i] = -sigma * x_n1(a + i * h);
-                B[i] = ((h * h) / tau) - C[i] - A[i];
+                for (int i = 1; i < N; i++) {
+                    A[i] = -sigma * x_n(a + i * h);
+                    C[i] = -sigma * x_n1(a + i * h);
+                    B[i] = ((h * h) / tau) - C[i] - A[i];
+                }
             }
 
             for (int i = 0; i < N + 1; i++) {
@@ -179,6 +209,27 @@ public class BalanceModel {
                 }
                 U0[i] = U1[i];
             }
+
+            iteration++;
+            t += tau;
+
         } while (Meps > eps);
+
+    }
+
+    public void exact_solution() {
+        Meps = 0;
+        U_exact = new double[N + 1];
+        for (int i = 0; i < N + 1; i++) {
+            U_exact[i] = (Ub - Ua) * X[i] + Ua;
+        }
+
+        for (int i = 0; i < N + 1; i++) {
+            if (Math.abs(U_exact[i] - U0[i]) >= Meps) {
+                Meps = Math.abs(U_exact[i] - U0[i]);
+            }
+        }
+
+
     }
 }

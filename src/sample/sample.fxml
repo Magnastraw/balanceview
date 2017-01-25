@@ -12,32 +12,33 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="543.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
-      <LineChart fx:id="lineChart" layoutX="14.0" layoutY="14.0">
+      <LineChart fx:id="lineChart" layoutY="25.0">
         <xAxis>
-          <NumberAxis side="BOTTOM" fx:id="xAxis" />
+          <NumberAxis label="x" side="BOTTOM" fx:id="xAxis" />
         </xAxis>
         <yAxis>
-          <NumberAxis fx:id="yAxis" side="LEFT" />
+          <NumberAxis fx:id="yAxis" label="u(x)" side="LEFT" />
         </yAxis>
       </LineChart>
-      <Button fx:id="button" layoutX="514.0" layoutY="371.0" mnemonicParsing="false" onAction="#paintGraph" prefHeight="25.0" prefWidth="143.0" text="Рассчитать" />
+      <Button fx:id="button" layoutX="514.0" layoutY="413.0" mnemonicParsing="false" onAction="#paintGraph" prefHeight="25.0" prefWidth="143.0" text="Рассчитать" />
       <Label layoutX="537.0" layoutY="29.0" text="Границы отрезка:" />
-      <Label layoutX="514.0" layoutY="69.0" text="Количество точек разбиения:" />
+      <Label layoutX="513.0" layoutY="67.0" text="Количество точек разбиения:" />
       <TextField fx:id="textEditA" layoutX="550.0" layoutY="44.0" prefHeight="25.0" prefWidth="25.0" />
       <TextField fx:id="textEditB" layoutX="594.0" layoutY="44.0" prefHeight="25.0" prefWidth="25.0" />
-      <TextField fx:id="textEditN" layoutX="514.0" layoutY="86.0" prefHeight="25.0" prefWidth="143.0" />
-      <Label layoutX="513.0" layoutY="111.0" text="Весовой параметр сигма:" />
-      <TextField fx:id="textEditSigma" layoutX="514.0" layoutY="128.0" prefHeight="25.0" prefWidth="143.0" />
-      <Label layoutX="514.0" layoutY="153.0" text="Погрешность:" />
-      <TextField fx:id="textEditEps" layoutX="514.0" layoutY="170.0" prefHeight="25.0" prefWidth="143.0" />
-      <Label layoutX="513.0" layoutY="195.0" text="Значение k на первом интервале:" />
-      <TextField fx:id="textEditK1" layoutX="514.0" layoutY="212.0" prefHeight="25.0" prefWidth="143.0" />
-      <Label layoutX="514.0" layoutY="237.0" text="Значение k на втором интервале:" />
-      <TextField fx:id="textEditK2" layoutX="514.0" layoutY="254.0" prefHeight="25.0" prefWidth="143.0" />
-      <TextField fx:id="textEditUa" layoutX="514.0" layoutY="296.0" prefHeight="25.0" prefWidth="143.0" />
-      <TextField fx:id="textEditUb" layoutX="513.0" layoutY="338.0" prefHeight="25.0" prefWidth="143.0" />
-      <Label layoutX="514.0" layoutY="279.0" text="Граничное значение Ua:" />
-      <Button layoutX="514.0" layoutY="405.0" mnemonicParsing="false" onAction="#clearGraph" prefHeight="25.0" prefWidth="143.0" text="Очистить" />
+      <TextField fx:id="textEditN" layoutX="513.0" layoutY="84.0" prefHeight="25.0" prefWidth="143.0" />
+      <TextField fx:id="textEditT" layoutX="513.0" layoutY="126.0" />
+      <Label layoutX="513.0" layoutY="153.0" text="Весовой параметр сигма:" />
+      <TextField fx:id="textEditSigma" layoutX="514.0" layoutY="170.0" prefHeight="25.0" prefWidth="143.0" />
+      <Label layoutX="514.0" layoutY="195.0" text="Погрешность:" />
+      <TextField fx:id="textEditEps" layoutX="514.0" layoutY="212.0" prefHeight="25.0" prefWidth="143.0" />
+      <Label layoutX="513.0" layoutY="237.0" text="Значение k на первом интервале:" />
+      <TextField fx:id="textEditK1" layoutX="514.0" layoutY="254.0" prefHeight="25.0" prefWidth="143.0" />
+      <Label layoutX="514.0" layoutY="279.0" text="Значение k на втором интервале:" />
+      <TextField fx:id="textEditK2" layoutX="514.0" layoutY="296.0" prefHeight="25.0" prefWidth="143.0" />
+      <TextField fx:id="textEditUa" layoutX="514.0" layoutY="338.0" prefHeight="25.0" prefWidth="143.0" />
+      <TextField fx:id="textEditUb" layoutX="513.0" layoutY="380.0" prefHeight="25.0" prefWidth="143.0" />
+      <Label layoutX="514.0" layoutY="321.0" text="Граничное значение Ua:" />
+      <Button layoutX="514.0" layoutY="447.0" mnemonicParsing="false" onAction="#clearGraph" prefHeight="25.0" prefWidth="143.0" text="Очистить" />
       <Label layoutX="538.0" layoutY="37.0" prefHeight="36.0" prefWidth="12.0" text="[">
          <font>
             <Font size="22.0" />
@@ -53,6 +54,10 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <Label layoutX="513.0" layoutY="321.0" text="Граничное значение Ub:" />
+      <Label layoutX="513.0" layoutY="363.0" text="Граничное значение Ub:" />
+      <Label layoutX="513.0" layoutY="109.0" text="Шаг по времени, сек.:" />
+      <Label fx:id="textLabelT" layoutX="56.0" layoutY="451.0" text="Решение найдено на итерации:" />
+      <Button layoutX="513.0" layoutY="479.0" mnemonicParsing="false" onAction="#exactSolution" prefHeight="25.0" prefWidth="143.0" text="Точное решение" />
+      <Label fx:id="textLabelExact" layoutX="56.0" layoutY="483.0" text="Максимальная разница с точным решением:" />
    </children>
 </Pane>
